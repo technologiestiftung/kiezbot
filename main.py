@@ -4,10 +4,9 @@
 import os, subprocess, random, time
 from dotenv import load_dotenv
 import openai
-from utils.helpers import *
+from utils.helpers import display, load_json, clear
 from utils.recording import record_audio
 from utils.gtts_synthing import synthing
-
 
 def transcribe_audio(filename):
     start = time.time()
@@ -16,10 +15,7 @@ def transcribe_audio(filename):
     display("Transcription took " + str(time.time() - start) + " seconds.")
     return transcript.text
 
-def display(text):
-    os.system('clear')
-    print(text)
-
+    
 def query_chatgpt(text,system,history):
     start = time.time()
     MAX_CONTEXT_QUESTIONS = 10
@@ -42,7 +38,6 @@ def query_chatgpt(text,system,history):
 # ------------------------------
 
 def main():
-    display("Optionen: 1 = Biene, 2 = Roboter, 3 = Currywurst")
     # Load environment variables from .env file
     load_dotenv()
     openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -51,13 +46,20 @@ def main():
     filename_input = "audio/input.wav"
     filename_output = "audio/output.mp3"
     personas = load_json("personas.json")
+    SYSTEM = "green"
+    USER = "yellow"
+    BOT = "blue"
+    ERROR = "red"
+
+    clear()
+    display("Optionen: 1 = Biene, 2 = Roboter, 3 = Currywurst", color=SYSTEM)
 
     while True:
         history = []
         code = input()
 
         if code == "q":
-            display("Programm beendet.")
+            display("Programm beendet.", color=SYSTEM)
             break
         else:
             # check if code has a persona
@@ -66,16 +68,15 @@ def main():
               persona = personas[code]
 
               greetings = "audio/personas/" + persona["path"] + "/" +  random.choice(persona["greetings"])["filename"]
-              print(greetings)
               os.system("afplay " + greetings)
             else:
-                display("Input not recognized: "+ code)
+                display("Input not recognized: "+ code, color=ERROR)
 
             while True:
                 # record audio
-                display("recording...")
+                display("recording...",color=ERROR)
                 record_audio(filename_input)
-                display("recording stopped.")
+                display("recording stopped.",color=ERROR)
 
                 # play wait sound while api calls are made
                 wait = "audio/personas/" + persona["path"] + "/" + random.choice(persona["wait"])["filename"]
@@ -83,13 +84,13 @@ def main():
 
                 # transcribe audio to text with whisper-1 model
                 user_text = transcribe_audio(filename_input)
-                display(user_text)
+                display(user_text,color=USER)
 
                 if "Ende" not in user_text:
                     # generate response from text with GPT-3 model
                     ai_response = query_chatgpt(user_text,persona["prompt"],history)
                     history.append((user_text, ai_response))
-                    display(ai_response)
+                    display(ai_response, color="white")
 
                     # convert response to audio with google text-to-speech model
                     synthing(ai_response,filename_output,persona["tts_settings"])
