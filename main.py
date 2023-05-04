@@ -53,7 +53,11 @@ def main():
     ERROR = "red"
 
     clear()
-    display("Optionen: 1 = Biene, 2 = Roboter, 3 = Currywurst", color=SYSTEM)
+    display("Hallo, ich bin der Kietbot!", color=SYSTEM)
+    display("Bitte wähle eine Persona aus (1-3)", color=SYSTEM)
+    display("Sage 'Ende', wenn Du das Gespräch beenden möchtest.", color=SYSTEM)
+    display("Viel Spaß!", color=SYSTEM)
+    display("\nOptionen: 1 = Biene, 2 = Roboter, 3 = Currywurst", color=SYSTEM)
 
     while True:
         history = []
@@ -69,7 +73,7 @@ def main():
                 persona = personas[code]
                 random_selection = persona["greetings"][random.randint(0,len(persona["greetings"])-1)]
                 file = "audio/personas/" + persona["path"] + "/" +  random_selection["filename"]
-                display(random_selection["text"], color=BOT)
+                display("\n" + random_selection["text"], color=BOT)
                 os.system("afplay " + file)
                 
             else:
