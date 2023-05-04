@@ -5,6 +5,7 @@ import os, subprocess, random, time
 from dotenv import load_dotenv
 import openai
 from utils.helpers import display, load_json, clear
+from utils.helpers import load_json
 from utils.recording import record_audio
 from utils.gtts_synthing import synthing
 
