@@ -49,7 +49,7 @@ def main():
     personas = load_json("personas.json")
     SYSTEM = "green"
     USER = "yellow"
-    BOT = "blue"
+    BOT = "white"
     ERROR = "red"
 
     clear()
@@ -66,10 +66,12 @@ def main():
             # check if code has a persona
             # and greet the user
             if code in personas:
-              persona = personas[code]
-
-              greetings = "audio/personas/" + persona["path"] + "/" +  random.choice(persona["greetings"])["filename"]
-              os.system("afplay " + greetings)
+                persona = personas[code]
+                random_selection = persona["greetings"][random.randint(0,len(persona["greetings"])-1)]
+                file = "audio/personas/" + persona["path"] + "/" +  random_selection["filename"]
+                display(random_selection["text"], color=BOT)
+                os.system("afplay " + file)
+                
             else:
                 display("Input not recognized: "+ code, color=ERROR)
 
@@ -81,25 +83,31 @@ def main():
 
                 # transcribe audio to text with whisper-1 model
                 user_text = transcribe_audio(filename_input)
-                display(user_text,color=USER)
+                display("\n"+ user_text,color=USER)
 
                 if "Ende" not in user_text:
                     # play wait sound while api calls are made
-                    wait = "audio/personas/" + persona["path"] + "/" + random.choice(persona["wait"])["filename"]
-                    subprocess.Popen(["afplay", wait])
+                    random_selection = persona["wait"][random.randint(0,len(persona["wait"])-1)]
+                    file = "audio/personas/" + persona["path"] + "/" +  random_selection["filename"]
+                    display(random_selection["text"], color=BOT)
+                    subprocess.Popen(["afplay", file])
+
                     # generate response from text with GPT-3 model
                     ai_response = query_chatgpt(user_text,persona["prompt"],history)
                     history.append((user_text, ai_response))
-                    display(ai_response, color="white")
+                    display("\n"+ai_response, color=BOT)
 
                     # convert response to audio with google text-to-speech model
                     synthing(ai_response,filename_output,persona["tts_settings"])
 
                     # play audio response
                     os.system("afplay " + filename_output)
+                
                 else:
-                    byebye = "audio/personas/" + persona["path"] + "/" + random.choice(persona["bye"])["filename"]
-                    os.system("afplay " + byebye)
+                    random_selection = persona["bye"][random.randint(0,len(persona["bye"])-1)]
+                    file = "audio/personas/" + persona["path"] + "/" +  random_selection["filename"]
+                    display(random_selection["text"], color=BOT)
+                    os.system("afplay " + file)
                     main()
    
 # ------------------------------
