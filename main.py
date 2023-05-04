@@ -79,15 +79,14 @@ def main():
                 record_audio(filename_input)
                 display("recording stopped.",color=ERROR)
 
-                # play wait sound while api calls are made
-                wait = "audio/personas/" + persona["path"] + "/" + random.choice(persona["wait"])["filename"]
-                subprocess.Popen(["afplay", wait])
-
                 # transcribe audio to text with whisper-1 model
                 user_text = transcribe_audio(filename_input)
                 display(user_text,color=USER)
 
                 if "Ende" not in user_text:
+                    # play wait sound while api calls are made
+                    wait = "audio/personas/" + persona["path"] + "/" + random.choice(persona["wait"])["filename"]
+                    subprocess.Popen(["afplay", wait])
                     # generate response from text with GPT-3 model
                     ai_response = query_chatgpt(user_text,persona["prompt"],history)
                     history.append((user_text, ai_response))
@@ -100,7 +99,7 @@ def main():
                     os.system("afplay " + filename_output)
                 else:
                     byebye = "audio/personas/" + persona["path"] + "/" + random.choice(persona["bye"])["filename"]
-                    subprocess.Popen(["afplay", byebye])
+                    os.system("afplay " + byebye)
                     main()
    
 # ------------------------------
