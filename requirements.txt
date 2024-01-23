@@ -3,7 +3,7 @@ google-cloud-texttospeech==2.14.1
 gTTS==2.3.1
 pyaudio==0.2.13
 numpy==1.21.0
-python-dotenv==0.21.1
+python-dotenv==1.0.1
 soundfile==0.12.1
 sounddevice==0.4.6
 RPi.GPIO==0.7.1
