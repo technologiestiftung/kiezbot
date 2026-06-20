@@ -4,6 +4,6 @@ gTTS==2.3.1
 pyaudio==0.2.13
 numpy==1.21.0
 python-dotenv==0.21.1
-soundfile==0.12.1
+soundfile==0.14.0
 sounddevice==0.4.6
 RPi.GPIO==0.7.1
